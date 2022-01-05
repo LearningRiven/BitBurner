@@ -1,0 +1,22 @@
+import * as nodeLoader from "/utils/nodeLoader.ns";
+
+var scriptFiles = ["/scripts/hack.script", "/scripts/grow.script", "/scripts/weaken.script"];
+var nodeThreads = [];
+var completed = [];
+
+export async function main(ns) {
+	var hackedNodes = nodeLoader.loadNodesWithAdminAccess(ns);
+	await performFileTransfer(ns, hackedNodes);
+	
+	ns.tprintf("Total: " + hackedNodes.length);
+}
+
+async function performFileTransfer(ns, hackedNodes){
+	for(var h = 0; h < hackedNodes.length; h++){
+		await moveFile(ns, scriptFiles, hackedNodes[h].hostname);
+	}
+}
+
+async function moveFile(ns, files, hostname){
+	await ns.scp(files, "home", hostname);
+}
