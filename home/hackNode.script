@@ -1,0 +1,65 @@
+var infoPrinted = false;
+
+var maxL = 200;
+var maxR = 64;
+var maxC = 16;
+
+var lvlToBuy = 10;
+var ramToBuy = 2;
+var coreToBuy = 1;
+
+function myMoney(){
+	return getServerMoneyAvailable("home");
+}
+
+function nodePurchaser(){
+    var nodes = hacknet.numNodes();
+
+    //First check to see if we can buy a node
+    if(myMoney() > hacknet.getPurchaseNodeCost() && nodes < maxNodes){
+        res = hacknet.purchaseNode();
+    }
+
+    //Next check each node for upgrades
+    for(var k = 0; k < nodes; k++){
+        //Level upgrade
+        if(hacknet.getLevelUpgradeCost(k, lvlToBuy) && hacknet.getNodeStats(k).level <= 200){
+            hacknet.upgradeLevel(k, lvlToBuy);
+        }
+        //Ram upgrade
+        if(hacknet.getRamUpgradeCost(k, ramToBuy) && hacknet.getNodeStats(k).ram <= 64){
+            hacknet.upgradeRam(k, ramToBuy);
+        }
+        //Core upgrade
+        if(hacknet.getCoreUpgradeCost(k, coreToBuy) && hacknet.getNodeStats(k).cores <= 16){
+            hacknet.upgradeCore(k, coreToBuy);
+        }
+    }
+}
+
+function printStats(){
+    var totalNodes = hacknet.numNodes();
+
+    var data = "\nExecuting Node Script\n\n";
+    var productionPerS = 0;
+
+    for(var k = 0; k < totalNodes; k++){
+        var nodeStats = hacknet.getNodeStats(k);
+        productionPerS = productionPerS + nodeStats.production;
+    }
+
+    data = data + "Current Cash Per Second: " + nFormat(productionPerS, "$ 0,000.##") + " Per Second"
+
+    tprint(data);
+}
+
+while(true){
+    //Information
+    if(!infoPrinted){
+        printStats();
+        infoPrinted = true;
+    }
+
+    nodePurchaser();
+}
+
