@@ -1,5 +1,6 @@
 var infoPrinted = false;
 
+var maxNodes = 1000;
 var maxL = 200;
 var maxR = 64;
 var maxC = 16;

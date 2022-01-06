@@ -1,0 +1,8 @@
+var target = args[0] ? args[0] : "n00dles";
+
+while(true){
+    hack(target);
+	weaken(target);
+    grow(target);
+    weaken(target);
+}

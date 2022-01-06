@@ -1,0 +1,11 @@
+{
+    "bitburner.authToken": "PLSM0wv+08/JvbVzhkIBkWH2pU9lMfCsZ88NyBC5U7XWpEABr7u+un0mfMc6u6Xu",
+    "bitburner.fileWatcher.enable": true,
+    "bitburner.scriptRoot": "./home",
+    "bitburner.showFileWatcherEnabledNotification": true,
+    "bitburner.showPushSuccessNotification": true,
+    "files.associations": {
+        "*.script": "javascript",
+        "*.ns": "javascript"
+    }
+}

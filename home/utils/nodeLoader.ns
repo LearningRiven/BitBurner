@@ -13,7 +13,7 @@ export function loadNodesWithAdminAccess(ns){
 
 export function loadReachableNodes(ns) {
 	//First load all of the children of the node you are connected to
-	var nodes = ns.scan();
+	var nodes = ns.scan("home");
 	var data = [];
 	var visitedNodes = [];
 
