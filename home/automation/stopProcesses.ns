@@ -1,0 +1,15 @@
+import * as nodeLoader from "/utils/nodeLoader.ns";
+
+export async function killAllHelper(ns) {
+    var hNodes = nodeLoader.loadNodesWithAdminAccess(ns);
+    var killedNodes = [];
+
+    var total = 0;
+    for(var k = 0; k < hNodes.length; k++){
+        ns.killall(hNodes[k].hostname);
+        killedNodes.push(hNodes[k]);
+        total++;
+    }
+    
+    ns.tprint("Killed all scripts on a total of " + total + " servers!");
+}

@@ -1,0 +1,59 @@
+import * as nodeLoader from "/utils/nodeLoader.ns";
+import * as calc from "/utils/calculations.ns";
+
+export async function rootAllHelper(ns){
+	var reachableNodes = nodeLoader.loadReachableNodes(ns);
+	var ports = calc.calculateAvailablePorts(ns);
+
+	var nodesHacked = [];
+	var cantRoot = 0;
+	var noBrute = 0;
+	var noFTP = 0;
+
+	let resp = await performRoot(ns, ports, nodesHacked, reachableNodes, cantRoot, noBrute, noFTP);
+
+	ns.tprint("\n\n" + "Root Results: " + "\n");
+	ns.tprint(vsprintf("Couldnt root %d nodes because of hacking level", [cantRoot]) + "\n");
+	ns.tprint(vsprintf("Couldnt root %d nodes because due to missing BruteSSH.exe", [noBrute]) + "\n");
+	ns.tprint(vsprintf("Couldnt root %d nodes because due to missing FTPCrack.exe", [noFTP]) + "\n");
+	ns.tprint(vsprintf("Rooted %d new nodes!", [nodesHacked.length]));
+
+	return resp;
+}
+
+async function performRoot(ns, ports, nodesHacked, reachableNodes, cantRoot){
+	for(var node of reachableNodes){
+		if(ns.getHackingLevel() >= node.requiredHackingSkill && !node.hasAdminAccess){
+			await openPorts(ns, ports, nodesHacked, node);
+		};
+	};
+}
+
+async function openPorts(ns, ports, nodesHacked, node, brute, ft){
+	let b = true;
+	let f = true;
+	let n = node.hasAdminAccess;
+
+	if((ports.indexOf("BruteSSH.exe") !== -1 && !node.sshPortOpen) || n){
+		b = false;
+		b = await ns.brutessh(node.hostname);
+	}else{
+		brute++;
+	}
+	if((ports.indexOf("FTPCrack.exe") !== -1 && !node.ftpPortOpen) || n){
+		f = false;
+		f = await ns.ftpcrack(node.hostname);
+	}
+	else{
+		ft++;
+	}
+	if(!node.hasAdminAccess && !node.purchasedByPlayer && node.numOpenPortsRequired <= node.openPortCount){
+		n = false;
+		n = await ns.nuke(node.hostname);
+	}
+
+	if(b && f && n){
+		nodesHacked.push(node);
+		return true;
+	}
+}

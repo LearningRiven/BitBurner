@@ -1,0 +1,26 @@
+function calculateTimeSince(st, cur){
+    var time = (cur - st) / 60;
+
+    return time;
+}
+
+var target = "joesguns";
+var start = Date.now();
+
+while(true){
+    var security =  nFormat(getServerSecurityLevel(target), " 0,000.##");
+    var money =  nFormat(getServerMoneyAvailable(target), "$ 0,000.##");
+    var minSecurity =  nFormat(getServerMinSecurityLevel(target), " 0,000.##");
+    var maxMoney =  nFormat(getServerMaxMoney(target), "$ 0,000.##");
+    var hackChance = nFormat(hackAnalyzeChance(target), " 0,000.##");
+    var curTime = nFormat(calculateTimeSince(start, Date.now()), " 0.##") + "Sec";
+    tprint(
+        vsprintf("---------------%s                --------------------", [curTime]) + "\n" + 
+        "Security     " + vsprintf(": %s", [security]) + "\n" +
+        "Min Sec      " + vsprintf(": %s", [minSecurity]) + "\n" +
+        "Money        " + vsprintf(": %s", [money]) + "\n" +
+        "Maximum Money" + vsprintf(": %s", [maxMoney]) + "\n" +
+        "Hack Chance  " + vsprintf(": %s", [hackChance]) + "\n" +
+         "-----------------------------------------------------"
+    );
+}

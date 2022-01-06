@@ -1,0 +1,37 @@
+import {calculateThreads} from "/utils/calculations.ns";
+import {loadNodesWithAdminAccess} from "/utils/nodeLoader.ns"
+
+var file = "/scripts/t1.script";
+var homeMod = 2;
+var awayMod = 1;
+
+export async function fileRunner(ns) {
+    var fileSize = await ns.getScriptRam(file, "home");
+    var hackedNodes = loadNodesWithAdminAccess(ns);
+    var total = 0;
+    for(var node of hackedNodes){
+        if(node.maxRam !== 0 && node.ramUsed === 0){
+            var threads = threadHelper(ns, fileSize, node, awayMod);
+            ns.exec(file, node.hostname, threads);
+            total++;
+        }
+    }
+    ns.tprint(
+        ns.vsprintf("Finished starting scripts on %d nodes (Total Threads: %d)", [total, (total*threads)])
+    );
+    var startOnHome = true;
+    if(startOnHome){
+        var homeServer = ns.getServer("home");
+        var threads = threadHelper(ns, fileSize, homeServer, homeMod);
+        ns.kill(file, "home");
+        ns.exec(file, "home", threads);
+        ns.tprint(
+            ns.vsprintf("Finished starting scripts on home, %d GB usage per thread (Threads: %d, Total Usage: %d GB)", [fileSize ,threads,fileSize*threads])
+        );
+    }
+}
+
+function threadHelper(ns, fileSize, node, mod){
+    var threads = calculateThreads(ns, fileSize, node, mod);
+    return threads;
+}

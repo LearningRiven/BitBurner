@@ -1,60 +1,13 @@
-import * as nodeLoader from "/utils/nodeLoader.ns";
-import * as calc from "/utils/calculations.ns";
-
-var scriptFiles = ["/scripts/t1.script", "/scripts/hack.script", "/scripts/grow.script", "/scripts/weaken.script"];
-var nodeThreads = [];
-var completed = [];
+import {rootAllHelper} from "/automation/rootNodes.ns";
+import {killAllHelper} from "/automation/stopProcesses.ns";
+import {moveHelper} from "/automation/moveFiles.ns";
+import {fileRunner} from "/automation/runFiles.ns";
 
 export async function main(ns) {
-	var hackedNodes = nodeLoader.loadNodesWithAdminAccess(ns);
-	if(hackedNodes.length === 0){
-		hackedNodes = performRoot(ns);
-	}
-	await performFileTransfer(ns, hackedNodes);
-	runScripts(ns, hackedNodes);
-	ns.tprintf("Total Affected Nodes: " + hackedNodes.length);
-}
-
-function performRoot(ns){
-	var reachableNodes = nodeLoader.loadReachableNodes(ns);
-	var ports = calc.calculateAvailablePorts(ns);
-
-	var nodesHacked = [];
-
-	for(var node of reachableNodes){
-		if(ns.getHackingLevel() >= node.requiredHackingSkill){
-			if(ports.indexOf("BruteSSH.exe") !== -1 && !node.sshPortOpen){
-				ns.brutessh(node.hostname);
-			}
-			if(ports.indexOf("FTPCrack.exe") !== -1 && !node.ftpPortOpen){
-				ns.ftpcrack(node.hostname);
-			}
-			if(!node.hasAdminAccess){
-				ns.nuke(node.hostname);
-				nodesHacked.push(node);
-			}
-		}
-	}
-}
-
-async function performFileTransfer(ns, hackedNodes){
-	for(var h = 0; h < hackedNodes.length; h++){
-		await moveFile(ns, scriptFiles, hackedNodes[h].hostname);
-	}
-}
-
-async function moveFile(ns, files, hostname){
-	await ns.scp(files, "home", hostname);
-}
-
-function runScripts(ns, hackedNodes){
-	var scriptRam = ns.getScriptRam("/scripts/t1.script", "home");
-	for(var node of hackedNodes){
-		var threads = Math.floor((node.maxRam - node.ramUsed)/scriptRam);
-		if(threads === 0){
-			threads = 1;
-		}
-		ns.tprintf("Ran: " + threads + " MAX: " + node.maxRam + " USED: " + node.ramUsed + " SRAM: " + scriptRam);
-		ns.exec("/scripts/t1.script", node.hostname, threads);
-	}
+	let p1 = await rootAllHelper(ns);
+    let p2 = await moveHelper(ns);
+    Promise.all([p1,p2]).then(() => {
+        killAllHelper(ns);
+        fileRunner(ns);
+    });
 }

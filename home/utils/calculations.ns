@@ -71,3 +71,13 @@ export function calculateAvailablePorts(ns){
 	}
 	return ports;
 }
+
+export function calculateThreads(ns, scriptRam, server, modifier){
+	var max = server.maxRam;
+	var cur = server.ramUsed;
+
+	var threads = (max - cur) / scriptRam;
+	threads = Math.floor(threads/modifier);
+	
+	return threads;
+}
