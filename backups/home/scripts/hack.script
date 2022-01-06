@@ -1,5 +1,0 @@
-var target = args[0] ? args[0] : "joesguns";
-
-while(true){
-	hack(target);
-}
