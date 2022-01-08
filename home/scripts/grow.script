@@ -1,5 +1,50 @@
-var target = args[0] ? args[0] : "joesguns";
+var target;
+// var threadsAvailable = args[0];
+var threadsAvailable = 400;
+// var override = true;
+// var starter = false;
+// var grw = Math.floor(threadsAvailable/2);
+// var wk  = threadsAvailable - grw;
 
 while(true){
-	grow(target);
+	// if(!override){
+	// 	var grw = Math.floor(grw);
+	// 	var wk  = threadsAvailable - grw;
+	// 	if(starter){
+	// 		starter = false;
+	// 		target = "n00dles";
+	// 		grow(target, {threads : grw});
+	// 		weaken(target, {threads: wk});
+	// 	}
+	// 	else{
+	// 		target = "joesguns"
+	// 	}
+
+	// 	if(getServerMoneyAvailable(target) < (0.25 * getServerMaxMoney(target))){
+	// 		var hk = Math.floor(grw/2);
+	// 		grw = Math.ceil(hk);
+	// 		if((hk + grw + wk) > threadsAvailable){
+	// 			hk = Math.floor(grw/2);
+	// 			grw = Math.floor(grw/2);
+	// 			wk = threadsAvailable - (hk+grw);
+	// 		}
+	// 		hack(target, {threads : hk})
+	// 		grow(target, {threads : grw});
+	// 		weaken(target, {threads: wk});
+	// 	}
+	// 	else{
+	// 		grow(target, {threads : grw});
+	// 		weaken(target, {threads: wk});
+	// 	}
+	// }
+	// else{
+		
+	grow("joesguns",{threads : args[0]});
+	grow("joesguns",{threads : args[0]});
+	grow("joesguns",{threads : args[0]});
+	weaken("joesguns",{threads : args[0]});
+	hack("joesguns",{threads : args[0]});
+		
+	// }
+	
 }

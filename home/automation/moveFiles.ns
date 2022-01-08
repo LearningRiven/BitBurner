@@ -1,6 +1,6 @@
 import * as nodeLoader from "/utils/nodeLoader.ns";
 
-var scriptFiles = ["/scripts/t1.script", "/scripts/hack.script", "/scripts/grow.script", "/scripts/weaken.script"];
+var scriptFiles = ["/scripts/t1.script", "/scripts/hack.script", "/scripts/grow.script", "/scripts/weaken.script", "/automation/distributedAttack.ns"];
 
 export async function moveHelper(ns) {
 	var hackedNodes = nodeLoader.loadNodesWithAdminAccess(ns);

@@ -16,10 +16,12 @@ while (i < getPurchasedServerLimit()) {
         //  3. Run our hacking script on the newly-purchased server with 3 threads
         //  4. Increment our iterator to indicate that we've bought a new server
         var hostname = purchaseServer("pserv-" + i, ram);
-        var node = getServer(hostname);
-        var threads = Math.floor((node.maxRam - node.ramUsed)/scriptRam);
-        scp("/scripts/t1.script", hostname);
-        exec("/scripts/t1.script", hostname, 3);
-        i++;
+        if(hostname){
+            var node = getServer(hostname);
+            var threads = Math.floor((node.maxRam - node.ramUsed)/scriptRam);
+            scp("/scripts/t1.script", hostname);
+            exec("/scripts/t1.script", hostname, 3);
+            i++;
+        }
     }
 }

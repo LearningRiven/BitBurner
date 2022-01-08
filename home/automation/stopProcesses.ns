@@ -1,6 +1,9 @@
 import * as nodeLoader from "/utils/nodeLoader.ns";
 
-export async function killAllHelper(ns) {
+var scriptFiles = ["/scripts/t1.script", "/scripts/hack.script", "/scripts/grow.script", "/scripts/weaken.script", 
+"/automation/distributedAttack.ns", "/scripts/t1.script"];
+
+export function killAllHelper(ns) {
     var hNodes = nodeLoader.loadNodesWithAdminAccess(ns);
     var killedNodes = [];
 
@@ -12,4 +15,37 @@ export async function killAllHelper(ns) {
     }
     
     ns.tprint("Killed all scripts on a total of " + total + " servers!");
+
+}
+
+export function killSomeHelper(ns){
+    var hNodes = nodeLoader.loadNodesWithAdminAccess(ns);
+    var homeServer = nodeLoader.parseNode(ns.getServer("home"));
+    hNodes.push(homeServer);
+    var processes = 0;
+    var killedNodes = [];
+
+    for(var node of hNodes){
+        var filesKilled = 0;
+        for(var file of scriptFiles){
+            filesKilled = killFilesOnANode(ns, node, file, killedNodes, filesKilled);
+        }
+        processes = processes + filesKilled;
+    }
+
+    ns.tprint(ns.vsprintf("Killed %d processes on %d nodes!",[processes, killedNodes.length]));
+}
+
+function killFilesOnANode(ns, node, file, killedNodes, processes){
+    var p1 = ns.ps(node.hostname);
+    for (var process of p1){
+        if(process.filename.indexOf(file) !== -1){
+            var complete = ns.kill(process.pid);
+            if(complete){
+                killedNodes.push(node);
+                processes = processes + 1;
+            }
+        }
+    }
+    return processes;
 }

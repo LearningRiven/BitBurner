@@ -1,0 +1,13 @@
+import {rootAllHelper} from "/automation/rootNodes.ns";
+import {killSomeHelper} from "/automation/stopProcesses.ns";
+import {moveHelper} from "/automation/moveFiles.ns";
+import {runAttack} from "/automation/runFiles.ns";
+
+export async function main(ns) {
+	let p1 = await rootAllHelper(ns);
+    let p2 = await moveHelper(ns);
+    Promise.all([p1,p2]).then(() => {
+        killSomeHelper(ns);
+        runAttack(ns);
+    });
+}

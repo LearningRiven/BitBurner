@@ -32,24 +32,26 @@ async function performRoot(ns, ports, nodesHacked, reachableNodes, cantRoot){
 async function openPorts(ns, ports, nodesHacked, node, brute, ft){
 	let b = true;
 	let f = true;
-	let n = node.hasAdminAccess;
+	let n = !node.hasAdminAccess;
 
-	if((ports.indexOf("BruteSSH.exe") !== -1 && !node.sshPortOpen) || n){
-		b = false;
-		b = await ns.brutessh(node.hostname);
-	}else{
-		brute++;
-	}
-	if((ports.indexOf("FTPCrack.exe") !== -1 && !node.ftpPortOpen) || n){
-		f = false;
-		f = await ns.ftpcrack(node.hostname);
-	}
-	else{
-		ft++;
-	}
-	if(!node.hasAdminAccess && !node.purchasedByPlayer && node.numOpenPortsRequired <= node.openPortCount){
-		n = false;
-		n = await ns.nuke(node.hostname);
+	if(n){
+		if((ports.indexOf("BruteSSH.exe") !== -1 && !node.sshPortOpen)){
+			b = false;
+			b = await ns.brutessh(node.hostname);
+		}else{
+			brute++;
+		}
+		if((ports.indexOf("FTPCrack.exe") !== -1 && !node.ftpPortOpen)){
+			f = false;
+			f = await ns.ftpcrack(node.hostname);
+		}
+		else{
+			ft++;
+		}
+		if(!node.purchasedByPlayer && node.numOpenPortsRequired <= node.openPortCount){
+			n = false;
+			n = await ns.nuke(node.hostname);
+		}
 	}
 
 	if(b && f && n){
