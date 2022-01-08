@@ -14,7 +14,7 @@
  * your root directory in BitBurner, set the prefixDirectory config as needed. Do not use a
  * relative path such as './myDirectory' - always use absolute paths like '/myDirectory'
  */
- let prefixDirectory = '/vue'
+ let prefixDirectory = ''
 
  /**
   * --------------------------------------

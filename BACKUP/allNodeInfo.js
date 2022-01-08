@@ -1,5 +1,5 @@
-import * as nodeLoader from "/utils/nodeLoader.ns";
-import * as calc from "/utils/calculations.ns";
+import * as nodeLoader from "/utils/nodeLoader.js";
+import * as calc from "/utils/calculations.js";
 
 export async function main(ns) {
 	//First load all of the reachable nodes
