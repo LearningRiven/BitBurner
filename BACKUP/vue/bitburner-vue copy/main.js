@@ -8,6 +8,7 @@ import Orchestrator from '/bitburner-vue/orchestrator.js'
 
 /** @param {NS} ns **/
 export async function main(ns) {
+  //Main loop here
   const main = new Main(ns, ns.args[0])
   await main.init()
 
@@ -17,6 +18,7 @@ export async function main(ns) {
   }
 }
 
+//Main driver class
 class Main {
   #ns
   #uuid

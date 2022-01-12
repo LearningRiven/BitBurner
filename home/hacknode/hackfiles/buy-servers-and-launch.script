@@ -1,0 +1,14 @@
+var ram = 2048;
+var i = 0;
+
+while(i < getPurchasedServerLimit()){
+    if(getServerMoneyAvailable("home") > getPurchasedServerCost(ram)){
+        var hostname = purchaseServer("pserver-2048-"+i, ram);
+        scp("/hacknode/hackfiles/tutorial-script.js", hostname);
+        var threads = Math.floor(2.4/ram);
+        if(threads > 0){
+            exec("/hacknode/hackfiles/tutorial-script.js", hostname, threads, "omega-net", threads);
+        }
+        i++;
+    }
+}

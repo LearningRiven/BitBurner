@@ -46,28 +46,38 @@ async function decide(ns, weakestNode, weakestI){
 	
 
 	ns.clearLog();
-	var action = "Nothing";
+	if(serverMoney > nc){
+		ns.hacknet.purchaseNode();
+	}
 	//Upgrade Core
-	if(serverMoney > cc && worthWaitingForCore(ns, serverMoney, cg, cc, rg, rc, lg, lc) && Z < 16){
-		ns.print("Buying a core");
-		ns.hacknet.upgradeCore(weakestI, 1);
-		action = "Bought core";
+	else if(worthWaitingForCore(ns, serverMoney, cg, cc, rg, rc, lg, lc, nc) && Z < 16){
+		if(serverMoney > cc){
+			ns.hacknet.upgradeCore(weakestI, 1);
+			ns.print("Bought core");
+		}
+		else{
+			ns.print("Waiting for core");
+		}
 	}
 	//Upgrade Ram
-	else if(serverMoney > rc && worthWaitingForRam(ns, serverMoney, cg, cc, rg, rc, lg, lc) && Y < 64){
-		ns.print("Buying ram");
-		ns.hacknet.upgradeRam(weakestI, 1);
-		action = "Bought ram";
+	else if(worthWaitingForRam(ns, serverMoney, cg, cc, rg, rc, lg, lc, nc) && Y < 64){
+		if(serverMoney > rc){
+			ns.hacknet.upgradeRam(weakestI, 1);
+			ns.print("Bought ram");
+		}
+		else{
+			ns.print("Waiting for ram");
+		}
 	}
 	//Upgrade a Level
-	else if(serverMoney > lc && worthWaitingForLevel(ns, serverMoney, cg, cc, rg, rc, lg, lc) && X < 200){
-		ns.hacknet.upgradeLevel(weakestI, 1);
-		action = "Bought level";
-	}
-	//Else buy a node
-	else if(serverMoney > nc){
-		ns.hacknet.purchaseNode();
-		action = "Bought node";
+	else if(worthWaitingForLevel(ns, serverMoney, cg, cc, rg, rc, lg, lc, nc) && X < 200){
+		if(serverMoney > lc){
+			ns.hacknet.upgradeLevel(weakestI, 1);
+			ns.print("Bought level");
+		}
+		else{
+			ns.print("Waiting for level");
+		}
 	}
 	ns.print("\nNode Production : " + ns.nFormat(calculateNodeProd(ns), "$ 0,000.##"));
 	ns.print("\nHack Node Number: " + weakestI);
@@ -101,31 +111,21 @@ function calculateTimeTill(ns, serverMoney, cost){
 
 function worthWaitingForCore(ns, serverMoney, coreGain, coreCost, ramGain, ramCost, levelGain, levelCost){
 	var timeToCore = calculateTimeTill(ns, serverMoney, coreCost);
-	if(timeToCore < 120){
-		return true;
-	}
-	if(levelCost > coreCost * 0.5){
+	if(timeToCore < 60 && coreGain > ramGain && coreGain > levelGain){
 		return true;
 	}
 	return false;
 }
 function worthWaitingForRam(ns, serverMoney, coreGain, coreCost, ramGain, ramCost, levelGain, levelCost){
 	var timeToRam = calculateTimeTill(ns, serverMoney, ramCost);
-	if(timeToRam < 90 && !worthWaitingForCore(ns, serverMoney, coreGain, coreCost, ramGain, ramCost, levelGain, levelCost)){
-		return true;
-	}
-	if(levelCost > ramCost * 0.5){
+	if(timeToRam < 40 && ramGain > levelGain){
 		return true;
 	}
 	return false;
 }
-function worthWaitingForLevel(ns, serverMoney, coreGain, coreCost, ramGain, ramCost, levelGain, levelCost){
-	var timeToLevel = calculateTimeTill(ns, serverMoney, levelCost);
-	if(timeToLevel < 60 && !worthWaitingForRam(ns, serverMoney, coreGain, coreCost, ramGain, ramCost, levelGain, levelCost) 
-	&& !worthWaitingForCore(ns, serverMoney, coreGain, coreCost, ramGain, ramCost, levelGain, levelCost)){
-		return true;
-	}
-	return false;
+function worthWaitingForLevel(ns, serverMoney, coreGain, coreCost, ramGain, ramCost, levelGain, levelCost, nodeCost){
+	// var timeToLevel = calculateTimeTill(ns, serverMoney, levelCost);
+	return true;
 }
 
 function calculateNodeProd(ns){
