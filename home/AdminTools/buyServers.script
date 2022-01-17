@@ -1,0 +1,35 @@
+//Disable Log
+disableLog('ALL');
+
+//User Options
+var power       = args[0] ? args[0] : 10;
+var scriptLaunch= args[1] ? args[1] : true;
+var script      = args[2] ? args[2] : "/Hacking/Attacks/timedAtt.js";
+var target      = args[3] ? args[3] : "n00dles";
+
+//Script ram weight
+var scriptRam   = getScriptRam(script, "home");
+
+//Calculate server ram to buy
+var ram = Math.pow(2,power);
+var i = 0;
+
+tprint("[INFO] The script to run is: " + script);
+tprint("[INFO] The ram of the script is: " + scriptRam);
+tprint("[INFO] The ram for each server is: " + nFormat(ram, "0.00b"));
+tprint("[INFO] The cost for each server is: " + nFormat(getPurchasedServerCost(ram), "$0,0.00"));
+
+//Loop until you get the server limit
+while(i < getPurchasedServerLimit()){
+    if(getServerMoneyAvailable("home") > getPurchasedServerCost(ram)){
+        var hostname = purchaseServer("pserver-" + ram + "-"+i, ram);
+        if(scriptLaunch){
+            scp(script, hostname);
+            var threads = Math.floor(ram/scriptRam);
+            if(threads > 0 && getServer(target).hasAdminRights){
+                exec(script, hostname, threads, target, threads);
+            }
+        }
+        i++;
+    }
+}
